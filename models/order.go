@@ -5,19 +5,15 @@ import "gorm.io/gorm"
 type Order struct {
 	gorm.Model
 	TableID       uint
-	OrderDetails  []OrderDetail `gorm:"foreignKey:OrderID"`
-	PaymentStatus string        `json:"payment_status" gorm:"not null;default:'unpaid'"`
-	DueAmount     float64       `json:"paid_amount"`
-	PaymentType   string        `json:"payment_type"`
-}
-
-type OrderDetail struct {
-	gorm.Model
-	OrderID   uint `json:"order_id"`
-	ProductID uint
-	Product   Product `json:"product" gorm:"foreignKey:ProductID"` // Product tipinde alan ekleyin
-	Quantity  int     `json:"quantity"`
-	Price     float64 `json:"price"`
+	PaymentStatus string  `json:"payment_status" gorm:"not null;default:'unpaid'"`
+	DueAmount     float64 `json:"due_amount"`
+	PaymentType   string  `json:"payment_type"`
+	OrderDetails  []struct {
+		gorm.Model
+		Product  Product `json:"product" gorm:"foreignKey:ProductID"`
+		Quantity int     `json:"quantity"`
+		Price    float64 `json:"price"`
+	} `json:"order_details"`
 }
 
 /*

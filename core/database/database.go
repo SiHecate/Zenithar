@@ -41,7 +41,6 @@ func MigrateTables() error {
 		&models.User{},
 		&models.Table{},
 		&models.Order{},
-		&models.OrderDetail{},
 		&models.Product{},
 	)
 	if err != nil {
