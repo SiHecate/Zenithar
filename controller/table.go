@@ -4,6 +4,7 @@ import (
 	"Zenithar/core/database"
 	"Zenithar/models"
 	"errors"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -104,64 +105,40 @@ func ListTables(c *fiber.Ctx) error {
 
 }
 
-func TakeBusy(c *fiber.Ctx) error {
-	var tableData struct {
-		TableNo string `json:"tableno"`
-	}
-
-	if err := c.BodyParser(&tableData); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
-	}
-
+func MakeBusy(TableNo string) error {
 	var existingTable models.Table
-	if err := database.Conn.Where("table_no = ?", tableData.TableNo).First(&existingTable).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
+	if err := database.Conn.Where("table_no = ?", TableNo).First(&existingTable).Error; err != nil {
+		return fmt.Errorf("error finding table: %v", err)
 	}
 
 	currentStatus := existingTable.Status
 
 	if currentStatus != "busy" {
 		if err := database.Conn.Model(&existingTable).Update("status", "busy").Error; err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update table status"})
+			return fmt.Errorf("failed to update table status: %v", err)
 		}
 
-		return c.JSON(fiber.Map{
-			"success": true,
-			"message": "Table status updated to Busy",
-		})
-	} else {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table is already busy"})
+		return nil
 	}
+
+	return fmt.Errorf("table is already busy")
 }
 
-func TakeAvailable(c *fiber.Ctx) error {
-	var tableData struct {
-		TableNo string `json:"tableno"`
-	}
-
-	if err := c.BodyParser(&tableData); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
-	}
-
+func MakeAvailable(TableNo string) error {
 	var existingTable models.Table
-	if err := database.Conn.Where("table_no = ?", tableData.TableNo).First(&existingTable).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
+	if err := database.Conn.Where("table_no = ?", TableNo).First(&existingTable).Error; err != nil {
+		return fmt.Errorf("error finding table: %v", err)
 	}
 
 	currentStatus := existingTable.Status
 
 	if currentStatus == "busy" {
 		if err := database.Conn.Model(&existingTable).Update("status", "available").Error; err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update table status"})
+			return fmt.Errorf("failed to update table status: %v", err)
 		}
 
-		return c.JSON(fiber.Map{
-			"success": true,
-			"message": "Table status updated to Available",
-		})
-	} else if currentStatus == "Available" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table is already available"})
-	} else {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table status is invalid"})
+		return nil
 	}
+
+	return fmt.Errorf("table is already available")
 }
