@@ -98,3 +98,65 @@ func ListTables(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": existingTables})
 
 }
+
+func TakeBusy(c *fiber.Ctx) error {
+	var tableData struct {
+		TableNo string `json:"tableno"`
+	}
+
+	if err := c.BodyParser(&tableData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
+	}
+
+	var existingTable models.Table
+	if err := database.Conn.Where("table_no = ?", tableData.TableNo).First(&existingTable).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
+	}
+
+	currentStatus := existingTable.Status
+
+	if currentStatus != "busy" {
+		if err := database.Conn.Model(&existingTable).Update("status", "busy").Error; err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update table status"})
+		}
+
+		return c.JSON(fiber.Map{
+			"success": true,
+			"message": "Table status updated to Busy",
+		})
+	} else {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table is already busy"})
+	}
+}
+
+func TakeAvailable(c *fiber.Ctx) error {
+	var tableData struct {
+		TableNo string `json:"tableno"`
+	}
+
+	if err := c.BodyParser(&tableData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
+	}
+
+	var existingTable models.Table
+	if err := database.Conn.Where("table_no = ?", tableData.TableNo).First(&existingTable).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
+	}
+
+	currentStatus := existingTable.Status
+
+	if currentStatus == "busy" {
+		if err := database.Conn.Model(&existingTable).Update("status", "available").Error; err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update table status"})
+		}
+
+		return c.JSON(fiber.Map{
+			"success": true,
+			"message": "Table status updated to Available",
+		})
+	} else if currentStatus == "Available" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table is already available"})
+	} else {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Table status is invalid"})
+	}
+}

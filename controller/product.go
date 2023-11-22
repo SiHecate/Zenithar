@@ -69,7 +69,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Product updated successfully", "product": existingProduct})
 }
 
-func DeletProduct(c *fiber.Ctx) error {
+func DeleteProduct(c *fiber.Ctx) error {
 	ProductName := c.Params("product_name")
 
 	var existingProduct models.Product
