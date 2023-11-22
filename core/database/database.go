@@ -45,6 +45,8 @@ func MigrateTables() error {
 		&models.OrderDetail{},
 	)
 
+	models.SeedData(Conn)
+
 	if err != nil {
 		return err
 	}

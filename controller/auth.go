@@ -96,7 +96,7 @@ func Login(c *fiber.Ctx) error {
 	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(loginRequest.Password))
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid password",
+			"error": "Invalid password",
 		})
 	}
 
@@ -119,8 +119,7 @@ func Login(c *fiber.Ctx) error {
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		c.Status(500).JSON(fiber.Map{"error": "could not generate token"})
-		return err
+		return c.Status(500).JSON(fiber.Map{"error": "could not generate token"})
 	}
 
 	cookie := fiber.Cookie{
@@ -134,6 +133,7 @@ func Login(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "user login success!",
+		"token":   tokenString, // Include the token in the response
 	})
 }
 

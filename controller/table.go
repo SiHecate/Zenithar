@@ -18,9 +18,8 @@ AddTable:
 */
 func AddTable(c *fiber.Ctx) error {
 	var tableData struct {
-		TableNo       string `json:"tableno"`
-		TablePassword string `json:"table_password"`
-		Capacity      int    `json:"capacity"`
+		TableNo  string `json:"tableno"`
+		Capacity int    `json:"capacity"`
 	}
 
 	if err := c.BodyParser(&tableData); err != nil {
@@ -40,9 +39,8 @@ func AddTable(c *fiber.Ctx) error {
 	}
 
 	newTable := models.Table{
-		TableNo:       tableData.TableNo,
-		TablePassword: tableData.TablePassword,
-		Capacity:      tableData.Capacity,
+		TableNo:  tableData.TableNo,
+		Capacity: tableData.Capacity,
 	}
 
 	if err := database.Conn.Create(&newTable).Error; err != nil {

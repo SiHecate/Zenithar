@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        
+        .form-container {
+            max-width: 400px;
+            padding: 20px;
+            border: 0.1px solid #ccc;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin-bottom: 20px; 
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .error {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <title>Product Operations</title>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Add Product</h1>
+        <form id="add-product-form">
+            <label for="product-name">Product Name:</label>
+            <input type="text" id="product-name" name="product-name" required>
+
+            <label for="product-category">Product Category:</label>
+            <input type="text" id="product-category" name="product-category" required>
+
+            <label for="product-price">Product Price:</label>
+            <input type="number" id="product-price" name="product-price" step="0.01" required>
+
+            <button type="button" onclick="addProduct()">Add Product</button>
+        </form>
+        <div id="add-product-message" class="message"></div>
+    </div>
+
+    <div class="form-container">
+        <h1>Update Product</h1>
+        <form id="update-product-form">
+            <label for="update-product-name">Product Name to Update:</label>
+            <input type="text" id="update-product-name" name="update-product-name" required>
+
+            <label for="update-product-category">New Category:</label>
+            <input type="text" id="update-product-category" name="update-product-category" required>
+
+            <label for="update-product-price">New Price:</label>
+            <input type="number" id="update-product-price" name="update-product-price" step="0.01" required>
+
+            <button type="button" onclick="updateProduct()">Update Product</button>
+        </form>
+        <div id="update-product-message" class="message"></div>
+    </div>
+
+    <div class="form-container">
+        <h1>Delete Product</h1>
+        <form id="delete-product-form">
+            <label for="delete-product-name">Product Name to Delete:</label>
+            <input type="text" id="delete-product-name" name="delete-product-name" required>
+
+            <button type="button" onclick="deleteProduct()">Delete Product</button>
+        </form>
+        <div id="delete-product-message" class="message"></div>
+    </div>
+
+    <div class="form-container">
+        <h1>List Products</h1>
+        <button type="button" onclick="listProducts()">List Products</button>
+        <div id="list-products-message" class="message"></div>
+    </div>
+
+    <script>
+        function showMessage(messageDiv, message, messageType) {
+            var messageElement = document.getElementById(messageDiv);
+            messageElement.innerText = message;
+            messageElement.className = "message " + messageType;
+            messageElement.style.display = "block";
+        }
+
+        function addProduct() {
+            var productName = document.getElementById("product-name").value;
+            var productCategory = document.getElementById("product-category").value;
+            var productPrice = parseFloat(document.getElementById("product-price").value);
+
+            var productData = {
+                product_name: productName,
+                product_category: productCategory,
+                product_price: productPrice
+            };
+
+            fetch("http://127.0.0.1:8080/product/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(productData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        showMessage("add-product-message", "Error: " + data.error, "error");
+                    } else {
+                        showMessage("add-product-message", "Product added successfully!", "success");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showMessage("add-product-message", "Failed to add product. Please try again.", "error");
+                });
+        }
+
+        function updateProduct() {
+            var productName = document.getElementById("update-product-name").value;
+            var productCategory = document.getElementById("update-product-category").value;
+            var productPrice = parseFloat(document.getElementById("update-product-price").value);
+
+            var updateData = {
+                product_name: productName,
+                product_category: productCategory,
+                product_price: productPrice
+            };
+
+            fetch("http://127.0.0.1:8080/product/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updateData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        showMessage("update-product-message", "Error: " + data.error, "error");
+                    } else {
+                        showMessage("update-product-message", "Product updated successfully!", "success");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showMessage("update-product-message", "Failed to update product. Please try again.", "error");
+                });
+        }
+
+        function deleteProduct() {
+            var productName = document.getElementById("delete-product-name").value;
+
+            var deleteData = {
+                product_name: productName
+            };
+
+            fetch("http://127.0.0.1:8080/product/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(deleteData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        showMessage("delete-product-message", "Error: " + data.error, "error");
+                    } else {
+                        showMessage("delete-product-message", "Product deleted successfully!", "success");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showMessage("delete-product-message", "Failed to delete product. Please try again.", "error");
+                });
+        }
+
+        function listProducts() {
+            fetch("http://127.0.0.1:8080/product/list")
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        showMessage("list-products-message", "Error: " + data.error, "error");
+                    } else {
+                        showMessage("list-products-message", "Product List:\n" + JSON.stringify(data.message), "success");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showMessage("list-products-message", "Failed to list products. Please try again.", "error");
+                });
+        }
+    </script>
+</body>
+
+</html>

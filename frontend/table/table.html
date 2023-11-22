@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        
+        .form-container {
+            max-width: 400px;
+            padding: 20px;
+            border: 0.1px solid #ccc;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin-bottom: 20px; 
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <title>Table Operations</title>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Add Table</h1>
+        <!-- Add Table Form -->
+        <form id="add-table-form">
+            <label for="tableno">Table Number:</label>
+            <input type="text" id="tableno" name="tableno" required>
+
+            <label for="capacity">Capacity:</label>
+            <input type="number" id="capacity" name="capacity" required>
+
+            <button type="button" onclick="addTable()">Add Table</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h1>Update Table</h1>
+        <!-- Update Table Form -->
+        <form id="update-table-form">
+            <label for="update-tableno">Table Number to Update:</label>
+            <input type="text" id="update-tableno" name="update-tableno" required>
+
+            <label for="update-capacity">New Capacity:</label>
+            <input type="number" id="update-capacity" name="update-capacity" required>
+
+            <button type="button" onclick="updateTable()">Update Table</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h1>Delete Table</h1>
+        <!-- Delete Table Form -->
+        <form id="delete-table-form">
+            <label for="delete-tableno">Table Number to Delete:</label>
+            <input type="text" id="delete-tableno" name="delete-tableno" required>
+
+            <button type="button" onclick="deleteTable()">Delete Table</button>
+        </form>
+    </div>
+
+    <script>
+        function addTable() {
+            var tableData = {
+                tableno: document.getElementById("tableno").value,
+                capacity: document.getElementById("capacity").value
+            };
+
+            fetch("http://127.0.0.1:8080/table/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(tableData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        alert("Error: " + data.error);
+                    } else {
+                        alert("Table added successfully!");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert("Failed to add table. Please try again.");
+                });
+        }
+
+        function updateTable() {
+            var updateData = {
+                tableno: document.getElementById("update-tableno").value,
+                capacity: document.getElementById("update-capacity").value
+            };
+
+            fetch("http://127.0.0.1:8080/table/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updateData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        alert("Error: " + data.error);
+                    } else {
+                        alert("Table updated successfully!");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert("Failed to update table. Please try again.");
+                });
+        }
+
+        function deleteTable() {
+            var deleteData = {
+                tableno: document.getElementById("delete-tableno").value
+            };
+
+            fetch("http://127.0.0.1:8080/table/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(deleteData),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        alert("Error: " + data.error);
+                    } else {
+                        alert("Table deleted successfully!");
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert("Failed to delete table. Please try again.");
+                });
+        }
+    </script>
+</body>
+
+</html>
