@@ -42,7 +42,9 @@ func MigrateTables() error {
 		&models.Table{},
 		&models.Order{},
 		&models.Product{},
+		&models.OrderDetail{},
 	)
+
 	if err != nil {
 		return err
 	}

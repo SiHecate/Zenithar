@@ -3,8 +3,10 @@ package controller
 import (
 	"Zenithar/core/database"
 	"Zenithar/models"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func AddTable(c *fiber.Ctx) error {
@@ -20,17 +22,20 @@ func AddTable(c *fiber.Ctx) error {
 
 	var existingTable models.Table
 	if err := database.Conn.Where("table_no", tableData.TableNo).First(&existingTable).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Database error"})
-	}
-
-	if existingTable.ID != 0 {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Record not found, proceed with table creation
+		} else {
+			return c.Status(500).JSON(fiber.Map{"error": "Database error"})
+		}
+	} else {
+		// Table already exists
 		return c.Status(422).JSON(fiber.Map{"error": "Table already exists"})
 	}
 
 	newTable := models.Table{
 		TableNo:       tableData.TableNo,
-		TablePassword: existingTable.TablePassword,
-		Capacity:      existingTable.Capacity,
+		TablePassword: tableData.TablePassword,
+		Capacity:      tableData.Capacity,
 	}
 
 	if err := database.Conn.Create(&newTable).Error; err != nil {

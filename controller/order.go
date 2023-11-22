@@ -28,9 +28,9 @@ func TakeOrder(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Table not found"})
 	}
 
-	// Create a new Order instance
 	newOrder := models.Order{
 		TableNo: orderRequest.TableNo,
+		TableID: existingTable.ID,
 	}
 
 	for _, productRequest := range orderRequest.Products {
@@ -45,12 +45,12 @@ func TakeOrder(c *fiber.Ctx) error {
 			Product:  existingProduct,
 			Quantity: productRequest.Quantity,
 			Price:    Price,
+			TableID:  existingTable.ID,
 		}
 
 		newOrder.OrderDetails = append(newOrder.OrderDetails, orderDetail)
 	}
 
-	// Save the order to the database
 	if err := database.Conn.Create(&newOrder).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error":   true,
