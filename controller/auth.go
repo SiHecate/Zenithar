@@ -13,6 +13,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+/*
+Signup:
+
+	Signup, yeni bir kullanıcı kaydı oluşturur.
+	İlgili JSON isteği (signupRequest) kullanılarak yeni bir kullanıcı oluşturulur.
+	Şifre, güvenli bir şekilde hashlenir.
+	Eğer aynı e-posta adresiyle kayıtlı bir kullanıcı varsa hata döner.
+*/
 func Signup(c *fiber.Ctx) error {
 	var signupRequest struct {
 		Name             string `json:"name"`
@@ -59,6 +67,15 @@ func Signup(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+/*
+Login:
+
+	Login, kullanıcı girişi yapar ve JWT (Json Web Token) üretilir.
+	Kullanıcının adı ve şifresi alınır.
+	Veritabanında bu bilgilerle kullanıcı aranır.
+	Şifre kontrolü yapılır ve eğer doğruysa JWT üretilir.
+	Üretilen JWT, bir HTTP only cookie ile kullanıcıya gönderilir.
+*/
 func Login(c *fiber.Ctx) error {
 	var loginRequest struct {
 		Name     string `json:"name"`
@@ -120,6 +137,12 @@ func Login(c *fiber.Ctx) error {
 	})
 }
 
+/*
+Logout:
+
+	Logout, kullanıcının çıkışını sağlar.
+	Kullanıcının tarayıcısındaki JWT içeren cookie silinir.
+*/
 func Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "token",

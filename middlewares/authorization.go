@@ -14,19 +14,16 @@ func Authorization() func(*fiber.Ctx) error {
 		id := c.Locals("Issuer")
 
 		var user models.User
-		database.Conn.Model(&user).Where("id = ?", id).First(&user)
-
-		if role == "User" {
-			fmt.Println("User role: " + user.Role)
-			fmt.Println("Username: " + user.Name)
-			fmt.Println("User email: " + user.Email)
+		if err := database.Conn.Model(&user).Where("id = ?", id).First(&user).Error; err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 		}
 
-		if role == "Admin" {
-			fmt.Println("Admin role: " + user.Role)
-			fmt.Println("Admin username: " + user.Name)
-			fmt.Println("Admin email: " + user.Email)
+		if role != "Admin" {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized"})
 		}
+
+		fmt.Println("Admin role: " + user.Role)
+		fmt.Println("Admin username: " + user.Name)
 
 		return c.Next()
 	}

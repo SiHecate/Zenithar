@@ -22,8 +22,15 @@ func SeedData(db *gorm.DB) error {
 	}
 
 	for _, user := range SeedData {
-		if err := db.Create(&user).Error; err != nil {
+		var existingUser User
+		if err := db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil && err != gorm.ErrRecordNotFound {
 			return err
+		}
+
+		if existingUser.ID == 0 {
+			if err := db.Create(&user).Error; err != nil {
+				return err
+			}
 		}
 	}
 

@@ -2,27 +2,35 @@ package routes
 
 import (
 	"Zenithar/controller"
+	"Zenithar/middlewares" // middleware'ları ekledik
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func Router(app *fiber.App) {
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Zenithar say Hello world")
+		return c.SendString("Zenithar says Hello world")
 	})
 
-	product := app.Group("/product")
-	product.Post("/add_product", controller.AddProduct)
-	product.Post("/update_product", controller.UpdateProduct)
-	product.Post("/delete_product", controller.DeleteProduct)
-	product.Get("/list_product", controller.ListProducts)
+	auth := app.Group("/auth")
+	auth.Post("/signup", controller.Signup)
+	auth.Post("/login", controller.Login)
+	auth.Post("/logout", controller.Logout)
 
-	table := app.Group("/table")
-	table.Post("/add_table", controller.AddTable)
-	table.Post("/update_table", controller.UpdateTable)
-	table.Post("/delete_table", controller.DeleteTable)
-	table.Get("/list_table", controller.ListTables)
+	product := app.Group("/product", middlewares.IsAuthorized(), middlewares.Authorization())
+	product.Post("/add", controller.AddProduct)
+	product.Post("/update", controller.UpdateProduct)
+	product.Delete("/delete/:product_name", controller.DeleteProduct)
+	product.Get("/list", controller.ListProducts)
 
-	order := app.Group("/order")
-	order.Post("/take_order", controller.TakeOrder)
+	table := app.Group("/table", middlewares.IsAuthorized(), middlewares.Authorization())
+	table.Post("/add", controller.AddTable)
+	table.Post("/update", controller.UpdateTable)
+	table.Delete("/delete/:tableNo", controller.DeleteTable)
+	table.Get("/list", controller.ListTables)
+
+	order := app.Group("/order", middlewares.IsAuthorized(), middlewares.Authorization())
+	order.Post("/take", controller.TakeOrder)
+	order.Post("/make_payment", controller.MakePayment)
+	order.Get("/list", controller.ListOrders)
 }

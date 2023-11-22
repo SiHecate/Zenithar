@@ -9,7 +9,7 @@ services:
     networks:
       - ZenitharNetwork
     image: postgres:latest
-    container_name: auth_postgres
+    container_name: zenithar_postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}

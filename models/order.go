@@ -4,9 +4,10 @@ import "gorm.io/gorm"
 
 type Order struct {
 	gorm.Model
-	TableID      uint          `gorm:"not null" json:"-"`
-	TableNo      string        `json:"tableno" gorm:"not null"`
-	OrderDetails []OrderDetail `json:"order_details" gorm:"foreignKey:OrderID"`
+	TableID       uint          `gorm:"not null" json:"-"`
+	TableNo       string        `json:"tableno" gorm:"not null"`
+	OrderDetails  []OrderDetail `json:"order_details" gorm:"foreignKey:OrderID"`
+	PaymentStatus bool          `json:"payment_status" gorm:"not null;default:false"`
 }
 
 type OrderDetail struct {
@@ -15,8 +16,8 @@ type OrderDetail struct {
 	Quantity  int     `json:"quantity"`
 	Price     float64 `json:"price"`
 	TableID   uint    `json:"table_id"`
-	OrderID   uint    `gorm:"foreignKey:OrderID"` // Bu alan, Order modelindeki primary key'e referans olmalıdır.
-	ProductID uint    // Bu alan, Product modelindeki primary key'e referans olmalıdır.
+	OrderID   uint    `gorm:"foreignKey:OrderID"`
+	ProductID uint
 }
 
 type OrderScreen struct {

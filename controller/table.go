@@ -10,6 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
+/*
+AddTable:
+
+	AddTable, yeni bir masa ekler.
+	İlgili masa daha önce varsa hata döner, aksi takdirde yeni masa oluşturur ve veritabanına ekler.
+*/
 func AddTable(c *fiber.Ctx) error {
 	var tableData struct {
 		TableNo       string `json:"tableno"`
@@ -46,6 +52,12 @@ func AddTable(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Table created successfully", "table": newTable})
 }
 
+/*
+UpdateTable:
+
+	UpdateTable, mevcut bir masa bilgisini günceller.
+	İlgili masa bilgilerini veritabanında bulur, gelen verilerle günceller ve tekrar veritabanına kaydeder.
+*/
 func UpdateTable(c *fiber.Ctx) error {
 	var tableData struct {
 		TableNo       string `json:"tableno"`
@@ -76,6 +88,12 @@ func UpdateTable(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Table updated successfully", "table": existingTable})
 }
 
+/*
+DeleteTable:
+
+	DeleteTable, bir masa bilgisini veritabanından siler.
+	İlgili masa bilgisini masa numarasına göre bulur ve siler.
+*/
 func DeleteTable(c *fiber.Ctx) error {
 	tableNo := c.Params("tableNo")
 
@@ -91,6 +109,12 @@ func DeleteTable(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Table deleted successfully"})
 }
 
+/*
+ListTables:
+
+	ListTables, tüm masaları listeler.
+	Veritabanından tüm masaları çeker ve istemciye gönderir.
+*/
 func ListTables(c *fiber.Ctx) error {
 	var existingTables []models.Table
 	if err := database.Conn.Find(&existingTables).Error; err != nil {
@@ -105,6 +129,11 @@ func ListTables(c *fiber.Ctx) error {
 
 }
 
+/*
+MakeBusy:
+
+	MakeBusy, belirli bir masa numarasındaki masanın durumunu "busy" olarak günceller.
+*/
 func MakeBusy(TableNo string) error {
 	var existingTable models.Table
 	if err := database.Conn.Where("table_no = ?", TableNo).First(&existingTable).Error; err != nil {
@@ -124,6 +153,11 @@ func MakeBusy(TableNo string) error {
 	return fmt.Errorf("table is already busy")
 }
 
+/*
+MakeAvailable:
+
+	MakeAvailable, belirli bir masa numarasındaki masanın durumunu "available" olarak günceller.
+*/
 func MakeAvailable(TableNo string) error {
 	var existingTable models.Table
 	if err := database.Conn.Where("table_no = ?", TableNo).First(&existingTable).Error; err != nil {

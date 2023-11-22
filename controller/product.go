@@ -9,6 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
+/*
+AddProduct:
+
+	AddProduct, yeni bir ürün ekler.
+	İlgili ürün daha önce varsa hata döner, aksi takdirde yeni ürünü oluşturur ve veritabanına ekler.
+*/
 func AddProduct(c *fiber.Ctx) error {
 	var productData struct {
 		ProductName     string  `json:"product_name"`
@@ -42,6 +48,12 @@ func AddProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Product created successfully", "product": newProduct})
 }
 
+/*
+UpdateProduct:
+
+	UpdateProduct, mevcut bir ürünün bilgilerini günceller.
+	İlgili ürünü veritabanında bulur, gelen verilerle günceller ve tekrar veritabanına kaydeder.
+*/
 func UpdateProduct(c *fiber.Ctx) error {
 	var productData struct {
 		ProductName     string  `json:"product_name"`
@@ -69,6 +81,12 @@ func UpdateProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Product updated successfully", "product": existingProduct})
 }
 
+/*
+DeleteProduct:
+
+	DeleteProduct, bir ürünü veritabanından siler.
+	İlgili ürünü ürün adına göre bulur ve siler.
+*/
 func DeleteProduct(c *fiber.Ctx) error {
 	ProductName := c.Params("product_name")
 
@@ -84,6 +102,12 @@ func DeleteProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Product deleted successfully"})
 }
 
+/*
+ListProducts:
+
+	ListProducts, tüm ürünleri listeler.
+	Veritabanından tüm ürünleri çeker ve istemciye gönderir.
+*/
 func ListProducts(c *fiber.Ctx) error {
 	var existingProducts []models.Product
 	if err := database.Conn.Find(&existingProducts).Error; err != nil {
