@@ -57,3 +57,4 @@ Bu projede aşağıdaki teknolojiler kullanılmıştır:
 - [Loki](https://grafana.com/loki) - Log Aggregation Sistemi
 
 
+![image](./Images/Postman.png)
