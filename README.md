@@ -7,7 +7,7 @@ Proje adını, iş, ticaret, çalışma ve ticaretle ilişkilendirilen bir konse
 Net internet stajı için geliştirdiğim temel bir sipariş verme uygulaması.
 
 ## Açıklama
-Backend development üzerine çalıştığım için projenin ağır kısmı backend üzerine, frontend konusunda temel işlevleri görecek şekilde bıraktım. CSS ve benzeri teknolojilerdeki zorlukları aşmak için ChatGPT gibi araçlardan yardım aldım, bu sayede frontend tecrübe eksikliğimi kapatmış oldum.
+Backend development üzerine çalıştığım için projenin ağır kısmı backend üzerine, frontend konusunda temel işlevleri görecek şekilde bıraktım. CSS ve benzeri teknolojilerdeki zorlukları aşmak için ChatGPT gibi araçlardan yardım aldım, bu sayede frontend tecrübe eksiklerimi örtmeye çalıştım.
 
 Oluşturduğum uygulama, ileriye dönük geliştirmelere açık bir yapıda tasarlandı ve kod tabanı, istenilen eklemeler veya çıkarmalar için kolaylıkla adapte edilebilir. Bu sayede projeyi sürekli olarak güncel tutmak, yeni özellikler eklemek veya gerektiğinde mevcut yapıyı değiştirmek oldukça kolaydır.
 
