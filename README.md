@@ -34,7 +34,7 @@ Proje genel olarak kafe veya benzeri mekanlarda kullanılabilen bir sipariş yö
   - Kullanıcı kimlik doğrulama sistemi eklenmiştir. Sadece admin yetkisine sahip kullanıcılar, belirli işlemleri gerçekleştirebilir.
 
 - **Kullanıcı Yetkileri:**
-  - Admin haricindeki kullanıcılar belirli işlevleri gerçekleştiremezler, bu da sistem
+  - Admin haricindeki kullanıcılar belirli işlevleri gerçekleştiremezler, bu da sistem güvenliğini arttırır.
 
 - **Monitoring ve Loglama Detayları:**
   - **Prometheus ve Grafana**: Proje performansını ve kaynak kullanımını izlemek için kullanılmıştır.
