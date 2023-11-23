@@ -56,5 +56,5 @@ Bu projede aşağıdaki teknolojiler kullanılmıştır:
 - [NGINX](https://www.nginx.com/) - Web Sunucusu
 - [Loki](https://grafana.com/loki) - Log Aggregation Sistemi
 
-
+# Postman
 ![image](./Images/Postman.png)
